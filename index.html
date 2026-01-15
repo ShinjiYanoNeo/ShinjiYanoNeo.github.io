@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Current Time and Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-image: url('background1.png');
+      background-size: cover;
+      background-position: center;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(3px);
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+    #time {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 48px;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      text-shadow: 0px 0px 8px rgba(0,0,0,0.6);
+      animation: fadeIn 1s ease-in-out;
+    }
+    #countdown {
+      font-size: 240px;
+      font-weight: 700;
+      background: linear-gradient(45deg, #ff4d4d, #ffcc00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255,0,0,0.5);
+      animation: pulse 1s infinite;
+    }
+    @media only screen and (max-width: 768px) {
+      #time {
+        font-size: 28px;
+      }
+      #countdown {
+        font-size: 120px;
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  </style>
+  <script>
+    var currentImage = 1;
+    var images = ['background1.png', 'background2.png'];
+
+    function preloadImages(urls, callback) {
+      var loadedCount = 0;
+      var imgs = [];
+      for (var i = 0; i < urls.length; i++) {
+        imgs[i] = new Image();
+        imgs[i].src = urls[i];
+        imgs[i].onload = function() {
+          loadedCount++;
+          if (loadedCount === urls.length) callback();
+        };
+      }
+    }
+
+    function switchBackground() {
+      if (Math.random() < 0.15) {
+        currentImage = currentImage === 1 ? 2 : 1;
+        document.body.style.backgroundImage = 'url(' + images[currentImage - 1] + ')';
+      }
+    }
+
+    function refreshData() {
+      var ct = new Date();
+      var currentTime = ct.toTimeString().split(' ')[0];
+      var countdown = 179 - ((Math.floor(ct.getTime() / 1000) + 73) % 180);
+      document.getElementById('time').innerText = currentTime;
+      document.getElementById('countdown').innerText = countdown;
+    }
+
+    setInterval(refreshData, 1000);
+    setInterval(switchBackground, 1000);
+
+    window.onload = function() {
+      preloadImages(images, function() {
+        refreshData();
+        switchBackground();
+      });
+    };
+  </script>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <p id="time"></p>
+    <p id="countdown"></p>
+  </div>
+</body>
+</html>
